@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Add Bookmark</title>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css">
+  <!-- <link rel="icon" href="icon-192.png" type="image/png"> -->
+  <link rel="icon" href="icon-192.png" type="image/x-icon">
+</head>
+<body>
+  <div class="form-container">
+    <h2>Add New Bookmark</h2>
+    <button class="logout-btn" id="googleSignInBtn">Sign in with Google</button>
+    <button class="logout-btn" id="logoutBtn">Logout</button>
+
+    <h3>Select Folder:</h3>
+    <div id="folderControls">
+      <button class="btn-addfolder" type="button" id="addFolderBtn">+ Add Folder</button>
+    </div>
+    <div id="folderList">Loading...</div>
+
+    <form id="form">
+      <label>URL:<input id="url" name="url" required></label>
+      <div id="linkPreview"></div>
+      <label>Title:<input id="title" name="title"></label>
+      <label>Notes / Description:<textarea id="desc" name="desc" rows="3"></textarea></label>
+    </form>
+  </div>
+
+  <script src="./config.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.5.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.5.2/firebase-auth-compat.js"></script>
+  <script src="share.js"></script>
+</body>
+</html>

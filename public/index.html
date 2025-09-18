@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#00b4ff" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Open Binder - Bookmarks</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="icon-192.png" type="image/x-icon">
+
+</head>
+
+<body>
+
+  <div class="app">
+    <div class="sidebar">
+      <h2>Folders</h2>
+      <div id="folderControls">
+        <button class="btn-addfolder" id="addFolderBtn">+ Add Folder</button>
+      </div>
+      <div class="folder-strip" id="folders">Loading...</div>
+      <div class="backup-controls">
+        <button id="backupBtn" class="backup-btn">Backup Data</button>
+        <button id="restoreBtn" class="restore-btn">Restore Data</button>
+      </div>
+      <div id="userInfo" class="user-info" style="margin:8px 0; color: var(--text-secondary); font-size: 0.9em;"></div>
+      <button id="googleSignInBtn" class="logout-btn">Sign in with Google</button>
+      <button id="logoutBtn" class="logout-btn">Logout</button>
+    </div>
+
+    <div class="content">
+      <div class="list-header">
+        <h2 id="folderTitle"></h2>
+        <button id="addNewBtn">Add New</button>
+      </div>
+      <div class="bookmark-list" id="bookmarks">Loading...</div>
+    </div>
+  </div>
+
+  <!-- Floating Archive Button -->
+  <button class="floating-archive-btn" id="archiveBtn">📦</button>
+
+  <!-- Modal for bookmark details -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-content">
+      <button class="close-btn" id="closeModalBtn">&times;</button>
+      <h3 id="modalTitle"></h3>
+      <div id="modalPreview" class="modal-preview"></div>
+      <p><a href="#" id="modalUrl" target="_blank"></a></p>
+      <p id="modalDescription"></p>
+    </div>
+  </div>
+
+  <!-- Backup file input (hidden) -->
+  <input type="file" id="restoreFileInput" accept=".json" style="display: none;">
+
+  <script src="./config.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.5.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.5.2/firebase-auth-compat.js"></script>
+  <script src="app.js"></script>
+</body>
+
+</html>
