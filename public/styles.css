@@ -48,7 +48,7 @@ body.locked .floating-save-btn {
 }
 
 .app.archive-mode .list-header h2::before {
-  content: "📦 ";
+  /* content: "📦 "; */
   color: var(--archive-color);
 }
 
@@ -59,97 +59,37 @@ body.locked .floating-save-btn {
   right: 20px;
   width: 56px;
   height: 56px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  color: white;
+  border-radius: 8px;
+  background: white;
+  border: 1px solid var(--border);
+  color: black;
   font-size: 24px;
   cursor: pointer;
-  box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.3),
-    0 4px 16px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
   z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  /* Ensure it's always visible */
   min-width: 56px;
   min-height: 56px;
-  /* Prevent any transform issues */
-  transform: translateZ(0);
-}
-.floating-archive-btn::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(45deg, rgba(255, 255, 255, 0.15), transparent);
-  transform: skewX(45deg) translateX(-100%);
-  transition: transform 0.6s ease;
-  border-radius: 50%;
-}
-
-.floating-archive-btn::after {
-  content: "";
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  background: linear-gradient(45deg, var(--archive-color), var(--archive-hover));
-  border-radius: 50%;
-  z-index: -1;
-  opacity: 0;
-  transition: opacity 0.3s ease;
 }
 
 .floating-archive-btn:hover {
-  transform: scale(1.05) translateY(-2px) translateZ(0);
-  background: rgba(255, 255, 255, 0.08);
-  box-shadow: 
-    0 12px 40px rgba(0, 0, 0, 0.4),
-    0 6px 20px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2),
-    0 0 20px rgba(255, 107, 53, 0.3);
-  border-color: rgba(255, 255, 255, 0.2);
-}
-.floating-archive-btn:hover::before {
-  transform: skewX(45deg) translateX(200%);
-}
-
-.floating-archive-btn:hover::after {
-  opacity: 0.1;
+  background: black;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .floating-archive-btn.active {
-  background: rgba(0, 180, 255, 0.1);
-  border-color: rgba(0, 180, 255, 0.3);
-  box-shadow: 
-    0 8px 32px rgba(0, 180, 255, 0.3),
-    0 4px 16px rgba(0, 180, 255, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1),
-    0 0 20px rgba(0, 180, 255, 0.4);
-}
-.floating-archive-btn.active::after {
-  background: linear-gradient(45deg, var(--accent), var(--accent-hover));
-  opacity: 0.15;
+  background: black;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 .floating-archive-btn.active:hover {
-  background: rgba(0, 180, 255, 0.15);
-  box-shadow: 
-    0 12px 40px rgba(0, 180, 255, 0.4),
-    0 6px 20px rgba(0, 180, 255, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2),
-    0 0 25px rgba(0, 180, 255, 0.5);
+  background: rgba(0, 0, 0, 0.8);
 }
 
 /* Floating Save Button for Share Page */
@@ -157,45 +97,33 @@ body.locked .floating-save-btn {
   position: fixed;
   bottom: 20px;
   left: 50%;
-  transform: translateX(-50%) translateZ(0);
+  transform: translateX(-50%);
   width: calc(100% - 40px);
   max-width: 400px;
   height: 56px;
-  border-radius: 28px;
-  background: rgba(0, 180, 255, 0.1);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-  border: 1px solid rgba(0, 180, 255, 0.2);
-  border-top: 1px solid rgba(0, 180, 255, 0.3);
-  border-bottom: 1px solid rgba(0, 180, 255, 0.1);
-  color: white;
+  border-radius: 8px;
+  background: white;
+  border: 1px solid var(--border);
+  color: black;
   font-size: 16px;
   font-weight: 500;
   cursor: pointer;
-  box-shadow: 
-    0 8px 32px rgba(0, 180, 255, 0.3),
-    0 4px 16px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
   z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   overflow: hidden;
-  /* Ensure proper positioning */
   min-height: 56px;
-  isolation: isolate;
 }
 
 .floating-save-btn:hover:not(:disabled) {
-  background: rgba(0, 180, 255, 0.15);
-  transform: translateX(-50%) translateY(-2px) translateZ(0);
-  box-shadow: 
-    0 12px 40px rgba(0, 180, 255, 0.4),
-    0 6px 20px rgba(0, 180, 255, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  border-color: rgba(0, 180, 255, 0.3);
+  background: black;
+  color: white;
+  transform: translateX(-50%) translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 /* Safe area support for save button */
 @supports (bottom: env(safe-area-inset-bottom)) {
@@ -270,6 +198,7 @@ body.locked .floating-save-btn {
   justify-content: center;
   min-width: 32px;
   min-height: 32px;
+  gap: 4px;
 }
 
 .logout-btn:hover {
@@ -455,6 +384,8 @@ body:not(.signed-in) #logoutBtn {
   align-items: center;
   gap: 8px;
   width: 100%;
+  justify-content: flex-start;
+  box-sizing: border-box;
 }
 
 .mobile-actions-menu .menu-item:hover {
@@ -509,9 +440,10 @@ body:not(.signed-in) #logoutBtn {
   text-align: left;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   width: 100%;
   justify-content: flex-start;
+  box-sizing: border-box;
 }
 
 .backup-btn:hover,
@@ -559,7 +491,9 @@ body:not(.signed-in) #logoutBtn {
   color: black;
   border: none;
   border-radius: 6px;
-  padding: 8px 16px;
+  width: 38px;
+  height: 38px;
+  /* padding: 8px 16px; */
   font-size: 0.9em;
   cursor: pointer;
   transition: background 0.2s;
@@ -665,6 +599,7 @@ body:not(.signed-in) #logoutBtn {
 .actions {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
   gap: 8px;
   flex-shrink: 0;
 }
@@ -678,6 +613,9 @@ body:not(.signed-in) #logoutBtn {
   padding: 6px;
   border-radius: 4px;
   transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .actions button:hover {
@@ -693,9 +631,15 @@ body:not(.signed-in) #logoutBtn {
   color: var(--accent);
 }
 
+.actions button.copy-btn:hover {
+  color: #4CAF50;
+}
+
 .material-symbols-outlined {
   font-family: "Material Symbols Outlined";
   font-size: 20px;
+  vertical-align: middle;
+  line-height: 1;
 }
 
 /* Special styling for form labels with icons */
@@ -965,7 +909,7 @@ button[type="submit"]:not(.floating-save-btn) {
   display: flex;
   overflow-x: auto;
   gap: 8px;
-  padding: 8px 0 15px;
+  /* padding: 8px 0 15px; */
   scrollbar-width: thin;
 }
 
@@ -991,7 +935,7 @@ button[type="submit"]:not(.floating-save-btn) {
 .folder-btn {
   background: var(--card-bg);
   border: 1px solid var(--border);
-  border-radius: 20px;
+  border-radius: 8px;
   padding: 8px 16px;
   white-space: nowrap;
   font-size: 0.95em;
@@ -1009,7 +953,8 @@ button[type="submit"]:not(.floating-save-btn) {
 .folder-btn.selected {
   background: var(--accent);
   border-color: var(--accent);
-  color: white;
+  color: black;
+  font-weight: 500;
 }
 
 /* Login Modal Styling */
@@ -1329,7 +1274,6 @@ body.signed-out .floating-save-btn {
     width: 52px;
     height: 52px;
     font-size: 22px;
-    /* Ensure it's above mobile browser UI */
     z-index: 9999;
   }
   
@@ -1338,72 +1282,39 @@ body.signed-out .floating-save-btn {
   }
   .floating-save-btn {
     position: fixed;
-    /* bottom: 50px; */
     left: 50%;
     transform: translateX(-50%);
     width: calc(100% - 40px);
     max-width: 400px;
     height: 56px;
-    border-radius: 28px;
-    background: rgba(0, 180, 255, 0.1);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    border: 1px solid rgba(0, 180, 255, 0.2);
-    border-top: 1px solid rgba(0, 180, 255, 0.3);
-    border-bottom: 1px solid rgba(0, 180, 255, 0.1);
-    color: white;
+    border-radius: 8px;
+    background: white;
+    border: 1px solid var(--border);
+    color: black;
     font-size: 16px;
     font-weight: 500;
     cursor: pointer;
-    box-shadow:
-      0 8px 32px rgba(0, 180, 255, 0.3),
-      0 4px 16px rgba(0, 0, 0, 0.2),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
     z-index: 1000;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
     overflow: hidden;
-    position: relative;
   }
-  
-  .floating-save-btn::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 50%;
-    height: 100%;
-    background: linear-gradient(45deg, rgba(255, 255, 255, 0.15), transparent);
-    transform: skewX(45deg) translateX(-100%);
-    transition: transform 0.6s ease;
-    border-radius: 28px;
-  }
-  
+
   .floating-save-btn:hover:not(:disabled) {
-    background: rgba(0, 180, 255, 0.15);
+    background: black;
+    color: white;
     transform: translateX(-50%) translateY(-2px);
-    box-shadow:
-      0 12px 40px rgba(0, 180, 255, 0.4),
-      0 6px 20px rgba(0, 180, 255, 0.3),
-      inset 0 1px 0 rgba(255, 255, 255, 0.2);
-    border-color: rgba(0, 180, 255, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   }
-  
-  .floating-save-btn:hover:not(:disabled)::before {
-    transform: skewX(45deg) translateX(200%);
-  }
-  
+
   .floating-save-btn:disabled {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.5);
+    background: var(--text-secondary);
     cursor: not-allowed;
-    box-shadow:
-      0 4px 16px rgba(0, 0, 0, 0.2),
-      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   }
   
   .floating-save-btn .loading-spinner {
@@ -1503,6 +1414,7 @@ body.signed-out .floating-save-btn {
   justify-content: center;
   gap: 6px;
   min-width: 80px;
+  vertical-align: middle;
 }
 
 .btn-primary:hover:not(:disabled) {
@@ -1532,6 +1444,7 @@ body.signed-out .floating-save-btn {
   justify-content: center;
   gap: 6px;
   min-width: 80px;
+  vertical-align: middle;
 }
 
 .btn-secondary:hover {

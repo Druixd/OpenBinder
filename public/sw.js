@@ -1,6 +1,6 @@
 // sw.js
-const CACHE_VERSION = 'v0.1.2 '; // Increment this with each deployment
-const CACHE_NAME = `OpenBinder-cache-${CACHE_VERSION}`;
+const CACHE_VERSION = 'v0.1.4 '; // Increment this with each deployment
+const CACHE_NAME = `openbinder-cache-${CACHE_VERSION}`;
 
 // Assets to cache immediately on install
 const CORE_ASSETS = [
@@ -46,7 +46,7 @@ self.addEventListener('activate', event => {
         return caches.keys().then(cacheNames => {
           return Promise.all(
             cacheNames
-              .filter(cacheName => cacheName.startsWith('bookmark-cache-') && cacheName !== CACHE_NAME)
+              .filter(cacheName => cacheName.startsWith('openbinder-cache-') && cacheName !== CACHE_NAME)
               .map(cacheName => {
                 console.log('[Service Worker] Deleting old cache:', cacheName);
                 return caches.delete(cacheName);

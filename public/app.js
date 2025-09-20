@@ -318,7 +318,7 @@ function toggleArchiveMode() {
     app.classList.add('archive-mode');
     if (archiveBtn) {
       archiveBtn.classList.add('active');
-      archiveBtn.innerHTML = '📁'; // Switch to regular folder icon
+      archiveBtn.innerHTML = '<span class="material-symbols-outlined">folder</span>'; // Switch to regular folder icon
     }
     const h2 = document.querySelector('.sidebar h2');
     if (h2) h2.textContent = 'Archive Folders';
@@ -326,7 +326,7 @@ function toggleArchiveMode() {
     app.classList.remove('archive-mode');
     if (archiveBtn) {
       archiveBtn.classList.remove('active');
-      archiveBtn.innerHTML = '📦'; // Archive icon
+      archiveBtn.innerHTML = '<span class="material-symbols-outlined">archive</span>'; // Archive icon
     }
     const h2 = document.querySelector('.sidebar h2');
     if (h2) h2.textContent = 'Folders';
@@ -430,7 +430,7 @@ async function loadFolders(selectId = null) {
       app.classList.add('archive-mode');
       if (archiveBtn) {
         archiveBtn.classList.add('active');
-        archiveBtn.innerHTML = '📁';
+        archiveBtn.innerHTML = '<span class="material-symbols-outlined">folder</span>';
       }
       const h2 = document.querySelector('.sidebar h2');
       if (h2) h2.textContent = 'Archive Folders';
@@ -545,18 +545,24 @@ async function loadBookmarks(fid) {
       card.className = 'row';
 
       // Different actions for archive vs regular mode
-      const actionButtons = isArchiveMode ? 
+      const actionButtons = isArchiveMode ?
         `<button onclick="deleteBookmark('${fid}','${doc.id}')" title="Delete permanently">
            <span class="material-symbols-outlined">delete_forever</span>
          </button>
          <button onclick="unarchiveBookmark('${fid}','${doc.id}')" class="unarchive-btn" title="Restore">
            <span class="material-symbols-outlined">unarchive</span>
+         </button>
+         <button onclick="copyBookmarkName('${fid}','${doc.id}')" class="copy-btn" title="Copy name">
+           <span class="material-symbols-outlined">content_copy</span>
          </button>` :
         `<button onclick="deleteBookmark('${fid}','${doc.id}')" title="Delete">
            <span class="material-symbols-outlined">delete</span>
          </button>
          <button onclick="archiveBookmark('${fid}','${doc.id}')" class="archive-btn" title="Archive">
            <span class="material-symbols-outlined">archive</span>
+         </button>
+         <button onclick="copyBookmarkName('${fid}','${doc.id}')" class="copy-btn" title="Copy name">
+           <span class="material-symbols-outlined">content_copy</span>
          </button>`;
 
       card.innerHTML = `
@@ -680,10 +686,10 @@ async function unarchiveBookmark(fid, id) {
 }
 
 async function deleteBookmark(fid, id) {
-  const confirmMessage = isArchiveMode ? 
-    "Permanently delete this bookmark? This cannot be undone." : 
+  const confirmMessage = isArchiveMode ?
+    "Permanently delete this bookmark? This cannot be undone." :
     "Delete this bookmark?";
-    
+
   if(!confirm(confirmMessage)) return;
 
   try {
@@ -694,6 +700,103 @@ async function deleteBookmark(fid, id) {
     console.error(err);
     alert("Error deleting bookmark");
   }
+}
+
+async function copyBookmarkName(fid, id) {
+  try {
+    const colName = isArchiveMode ? 'bookmark_archive' : 'bookmark_secret';
+    const bookmarkDoc = await userCol(colName).doc(fid).collection('links').doc(id).get();
+    const bookmarkData = bookmarkDoc.data();
+
+    if (!bookmarkData || !bookmarkData.title) {
+      alert("No title found to copy");
+      return;
+    }
+
+    // Filter out specified words and clean up the title
+    let filteredTitle = bookmarkData.title;
+
+    // Remove specified words (case insensitive)
+    const wordsToRemove = ['movie', 'tv show', 'tvshow', 'anime'];
+    wordsToRemove.forEach(word => {
+      const regex = new RegExp(`\\b${word}\\b`, 'gi');
+      filteredTitle = filteredTitle.replace(regex, '');
+    });
+
+    // Remove hyphens and extra spaces
+    filteredTitle = filteredTitle.replace(/[-\s]+/g, ' ').trim();
+
+    // Remove extra spaces that might be left after removing words
+    filteredTitle = filteredTitle.replace(/\s+/g, ' ').trim();
+
+    // Copy to clipboard
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(filteredTitle);
+    } else {
+      // Fallback for older browsers or non-secure contexts
+      const textArea = document.createElement('textarea');
+      textArea.value = filteredTitle;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+    }
+
+    // Show success feedback
+    showCopyFeedback();
+  } catch(err) {
+    console.error(err);
+    alert("Error copying bookmark name");
+  }
+}
+
+function showCopyFeedback() {
+  // Create a temporary feedback element
+  const feedback = document.createElement('div');
+  feedback.textContent = 'Name copied!';
+  feedback.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(76, 175, 80, 0.9);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 10000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    animation: slideIn 0.3s ease-out;
+  `;
+
+  // Add animation keyframes if not already present
+  if (!document.querySelector('#copy-feedback-styles')) {
+    const style = document.createElement('style');
+    style.id = 'copy-feedback-styles';
+    style.textContent = `
+      @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+      }
+      @keyframes slideOut {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100%); opacity: 0; }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  document.body.appendChild(feedback);
+
+  // Remove after 2 seconds with animation
+  setTimeout(() => {
+    feedback.style.animation = 'slideOut 0.3s ease-in';
+    setTimeout(() => {
+      if (feedback.parentNode) {
+        feedback.parentNode.removeChild(feedback);
+      }
+    }, 300);
+  }, 2000);
 }
 
 function showModal(title, description, url) {
