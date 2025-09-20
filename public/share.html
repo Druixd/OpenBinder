@@ -11,22 +11,48 @@
 </head>
 <body>
   <div class="form-container">
-    <h2>Add New Bookmark</h2>
-    <button class="logout-btn" id="googleSignInBtn">Sign in with Google</button>
-    <button class="logout-btn" id="logoutBtn">Logout</button>
+    <h2><span class="material-symbols-outlined">bookmark_add</span> Add New Bookmark</h2>
 
-    <h3>Select Folder:</h3>
-    <div id="folderControls">
-      <button class="btn-addfolder" type="button" id="addFolderBtn">+ Add Folder</button>
+    <div class="folder-section">
+      <div class="folder-list-container">
+        <button class="btn-addfolder-square" type="button" id="addFolderBtn" title="Add Folder"><span class="material-symbols-outlined">add</span></button>
+        <div id="folderList">Loading...</div>
+      </div>
     </div>
-    <div id="folderList">Loading...</div>
 
     <form id="form">
-      <label>URL:<input id="url" name="url" required></label>
+      <div class="form-field">
+        <label><span class="material-symbols-outlined">link</span>Link:</label>
+        <input id="url" name="url" required>
+      </div>
       <div id="linkPreview"></div>
-      <label>Title:<input id="title" name="title"></label>
-      <label>Notes / Description:<textarea id="desc" name="desc" rows="3"></textarea></label>
+      
+      <div class="form-field">
+        <label><span class="material-symbols-outlined">title</span>Title:</label>
+        <input id="title" name="title">
+      </div>
+      
+      <div class="form-field">
+        <label><span class="material-symbols-outlined">description</span>Description:</label>
+        <textarea id="desc" name="desc" rows="3"></textarea>
+      </div>
     </form>
+  </div>
+
+  <!-- Login Modal for non-signed-in users -->
+  <div class="login-modal-overlay" id="loginModalOverlay">
+    <div class="login-modal-content">
+      <div class="login-modal-header">
+        <h2>Welcome to Open Binder</h2>
+        <p>Sign in to save and organize your bookmarks</p>
+      </div>
+      <div class="login-modal-body">
+        <button id="modalGoogleSignInBtn" class="google-signin-btn">
+          <span class="material-symbols-outlined">login</span>
+          Sign in with Google
+        </button>
+      </div>
+    </div>
   </div>
 
   <script src="./config.js"></script>

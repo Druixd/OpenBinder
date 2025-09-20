@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OpenBinder Extension Auth Bridge</title>
+  <link rel="icon" href="icon-192.png">
+  <style>
+    :root {
+      color-scheme: dark;
+    }
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #050505;
+      color: #ccc;
+      font-family: "Segoe UI", "Roboto", sans-serif;
+      font-size: 14px;
+    }
+    .status {
+      opacity: 0.7;
+    }
+  </style>
+  <script src="./config.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.5.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.5.2/firebase-auth-compat.js"></script>
+</head>
+<body>
+  <div class="status" id="status">Preparing bridge…</div>
+  <script src="extension-bridge.js"></script>
+</body>
+</html>

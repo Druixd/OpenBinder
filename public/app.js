@@ -4,6 +4,7 @@ let currentUser = null;
 let currentFolderId = null;
 let isArchiveMode = false;
 
+
 document.addEventListener('DOMContentLoaded', () => {
   console.log('[index] DOMContentLoaded');
   // Remove legacy master-code gate and rely on Firebase Auth instead
@@ -45,9 +46,11 @@ function initFirebase() {
 
     if (user) {
       // When signed in, load folders for this user
+      document.body.classList.add('signed-in');
       loadFolders();
     } else {
       // Clear content when signed out
+      document.body.classList.remove('signed-in');
       const foldersCont = document.getElementById('folders');
       const bookmarksCont = document.getElementById('bookmarks');
       const folderTitle = document.getElementById('folderTitle');
@@ -77,7 +80,6 @@ function initFirebase() {
  * UI helpers for auth
  */
 function updateAuthUI(isSignedIn) {
-  const signInBtn = document.getElementById('googleSignInBtn');
   const logoutBtn = document.getElementById('logoutBtn');
   const addFolderBtn = document.getElementById('addFolderBtn');
   const addNewBtn = document.getElementById('addNewBtn');
@@ -85,12 +87,24 @@ function updateAuthUI(isSignedIn) {
   const restoreBtn = document.getElementById('restoreBtn');
   const archiveBtn = document.getElementById('archiveBtn');
   const userInfo = document.getElementById('userInfo');
+  const signInBtn = document.getElementById('googleSignInBtn');
 
-  if (signInBtn) signInBtn.style.display = isSignedIn ? 'none' : 'block';
+  // Update body class for CSS styling
+  if (isSignedIn) {
+    document.body.classList.add('signed-in');
+  } else {
+    document.body.classList.remove('signed-in');
+  }
+
+  // Show/hide sign-in button
+  if (signInBtn) {
+    signInBtn.style.display = isSignedIn ? 'none' : 'flex';
+  }
+
   if (logoutBtn) {
     logoutBtn.style.display = isSignedIn ? 'block' : 'none';
-    logoutBtn.textContent = 'Sign out';
   }
+
   // Hide actions that require a user
   const onOff = isSignedIn ? 'block' : 'none';
   if (addFolderBtn) addFolderBtn.style.display = onOff;
@@ -103,10 +117,11 @@ function updateAuthUI(isSignedIn) {
   if (userInfo) {
     if (isSignedIn && auth && auth.currentUser) {
       const u = auth.currentUser;
-      const name = u.displayName || '';
       const email = u.email || u.uid;
+      // Extract username from email (part before @)
+      const username = email.includes('@') ? email.split('@')[0] : email;
       const photo = u.photoURL ? `<img src="${u.photoURL}" alt="" style="width:18px;height:18px;border-radius:50%;vertical-align:middle;margin-right:6px">` : '';
-      userInfo.innerHTML = `${photo}<span>${name ? escapeHtml(name) + ' · ' : ''}${escapeHtml(email)}</span>`;
+      userInfo.innerHTML = `${photo}<span>${escapeHtml(username)}</span>`;
       userInfo.style.display = 'block';
     } else {
       userInfo.textContent = '';
@@ -136,6 +151,39 @@ async function signOut() {
   }
 }
 
+function showFolderModal() {
+  const modal = document.getElementById('folderModal');
+  const folderNameInput = document.getElementById('folderName');
+  const createBtn = document.getElementById('createFolderBtn');
+
+  if (modal && folderNameInput && createBtn) {
+    // Reset form
+    folderNameInput.value = '';
+    createBtn.disabled = true;
+
+    // Show modal
+    modal.style.display = 'flex';
+  }
+}
+
+function hideFolderModal() {
+  const modal = document.getElementById('folderModal');
+  if (modal) {
+    modal.style.display = 'none';
+  }
+}
+
+function updateCreateButton() {
+  const folderNameInput = document.getElementById('folderName');
+  const createBtn = document.getElementById('createFolderBtn');
+
+  if (folderNameInput && createBtn) {
+    const hasName = folderNameInput.value.trim().length > 0;
+    createBtn.disabled = !hasName;
+  }
+}
+
+
 /**
  * Event listeners
  */
@@ -156,12 +204,19 @@ function setupEventListeners() {
   const closeModalBtn = document.getElementById('closeModalBtn');
   if (closeModalBtn) closeModalBtn.onclick = hideModal;
 
-  // Backup/Restore event listeners
+  // Backup/Restore event listeners (desktop)
   const backupBtn = document.getElementById('backupBtn');
   if (backupBtn) backupBtn.onclick = backupData;
 
   const restoreBtn = document.getElementById('restoreBtn');
   if (restoreBtn) restoreBtn.onclick = () => document.getElementById('restoreFileInput').click();
+
+  // Backup/Restore (mobile popup)
+  const mobileBackupBtn = document.getElementById('mobileBackupBtn');
+  if (mobileBackupBtn) mobileBackupBtn.onclick = backupData;
+
+  const mobileRestoreBtn = document.getElementById('mobileRestoreBtn');
+  if (mobileRestoreBtn) mobileRestoreBtn.onclick = () => document.getElementById('restoreFileInput').click();
 
   const restoreFileInput = document.getElementById('restoreFileInput');
   if (restoreFileInput) restoreFileInput.onchange = handleRestoreFile;
@@ -179,6 +234,69 @@ function setupEventListeners() {
       }
     });
   }
+
+  // Folder modal event listeners
+  const closeFolderModalBtn = document.getElementById('closeFolderModalBtn');
+  if (closeFolderModalBtn) closeFolderModalBtn.onclick = hideFolderModal;
+
+  const cancelFolderBtn = document.getElementById('cancelFolderBtn');
+  if (cancelFolderBtn) cancelFolderBtn.onclick = hideFolderModal;
+
+  const createFolderBtn = document.getElementById('createFolderBtn');
+  if (createFolderBtn) createFolderBtn.onclick = createFolder;
+
+  const folderNameInput = document.getElementById('folderName');
+  if (folderNameInput) {
+    folderNameInput.addEventListener('input', updateCreateButton);
+    folderNameInput.addEventListener('keyup', (e) => {
+      if (e.key === 'Enter' && !createFolderBtn.disabled) {
+        createFolder();
+      }
+    });
+  }
+
+  // Close folder modal when clicking outside
+  const folderModal = document.getElementById('folderModal');
+  if (folderModal) {
+    folderModal.addEventListener('click', (e) => {
+      if (e.target === folderModal) {
+        hideFolderModal();
+      }
+    });
+  }
+
+  // Mobile: Toggle profile actions popup when tapping username
+  const userInfoEl = document.getElementById('userInfo');
+  const mobileMenu = document.getElementById('mobileActionsMenu');
+  if (userInfoEl && mobileMenu) {
+    const isMobile = () => window.matchMedia('(max-width: 768px)').matches;
+
+    const onUserClick = (e) => {
+      if (!isMobile()) return; // disable on desktop
+      e.stopPropagation();
+      mobileMenu.classList.toggle('open');
+    };
+    const onMenuClick = (e) => e.stopPropagation();
+    const onDocClick = () => mobileMenu.classList.remove('open');
+    const onKey = (e) => { if (e.key === 'Escape') mobileMenu.classList.remove('open'); };
+
+    // Bind once
+    userInfoEl.addEventListener('click', onUserClick);
+    mobileMenu.addEventListener('click', onMenuClick);
+    document.addEventListener('click', onDocClick);
+    document.addEventListener('keydown', onKey);
+
+    // Also ensure menu closes if switching to desktop
+    window.addEventListener('resize', () => {
+      if (!isMobile()) {
+        mobileMenu.classList.remove('open');
+      }
+    });
+  }
+
+  // Mobile: small sticky add-folder button
+  const addFolderFabMobile = document.getElementById('addFolderFabMobile');
+  if (addFolderFabMobile) addFolderFabMobile.onclick = addFolder;
 }
 
 /**
@@ -223,7 +341,13 @@ function toggleArchiveMode() {
 
 async function addFolder() {
   if (!currentUser) return alert('Sign in first');
-  const name = prompt("Folder name?");
+  showFolderModal();
+}
+
+async function createFolder() {
+  const folderNameInput = document.getElementById('folderName');
+  const name = folderNameInput ? folderNameInput.value.trim() : '';
+
   if (!name) return;
 
   const colName = isArchiveMode ? 'bookmark_archive' : 'bookmark_secret';
@@ -233,6 +357,7 @@ async function addFolder() {
   });
 
   // Select newly created folder
+  hideFolderModal();
   saveLastOpenedFolder(docRef.id);
   loadFolders(docRef.id);
 }
@@ -284,7 +409,15 @@ function getLastOpenedFolder() {
 async function loadFolders(selectId = null) {
   const cont = document.getElementById('folders');
   if (!cont) return;
-  cont.innerHTML = '<div class="loading">Loading...</div>';
+
+  // Preserve the mobile Add FAB if present while showing loading state
+  const existingFab = document.getElementById('addFolderFabMobile');
+  cont.innerHTML = '';
+  if (existingFab) cont.appendChild(existingFab);
+  const loadingDiv = document.createElement('div');
+  loadingDiv.className = 'loading';
+  loadingDiv.textContent = 'Loading...';
+  cont.appendChild(loadingDiv);
 
   // Restore archive mode state
   const savedArchiveMode = localStorage.getItem('archive_mode') === 'true';
@@ -322,18 +455,31 @@ async function loadFolders(selectId = null) {
 
     if (snap.empty) {
       const emptyMessage = isArchiveMode ? 'No archived folders' : 'No folders';
-      cont.innerHTML = `<div class="empty-state">${emptyMessage}</div>`;
+      const fab = document.getElementById('addFolderFabMobile');
+      cont.innerHTML = '';
+      if (fab) cont.appendChild(fab);
+      const empty = document.createElement('div');
+      empty.className = 'empty-state';
+      empty.textContent = emptyMessage;
+      cont.appendChild(empty);
+
       document.getElementById('folderTitle').textContent = '';
       document.getElementById('bookmarks').innerHTML = '<div class="empty-state">Create a folder first</div>';
       return;
     }
 
+    // Clear but keep the mobile Add FAB at the start
+    const fabForList = document.getElementById('addFolderFabMobile');
     cont.innerHTML = '';
+    if (fabForList) cont.appendChild(fabForList);
+
     let foundSelectedFolder = false;
 
     snap.forEach((doc, idx) => {
+      const folderData = doc.data();
       const btn = document.createElement('button');
-      btn.textContent = doc.data().name || 'Unnamed';
+      btn.textContent = folderData.name || 'Unnamed';
+
       btn.onclick = () => {
         document.querySelectorAll('.folder-strip button').forEach(b => b.classList.remove('selected'));
         btn.classList.add('selected');

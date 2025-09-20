@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#00b4ff" />
+  <meta name="theme-color" content="#ffffff" />
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Open Binder - Bookmarks</title>
@@ -20,24 +20,49 @@
 
   <div class="app">
     <div class="sidebar">
-      <h2>Folders</h2>
-      <div id="folderControls">
-        <button class="btn-addfolder" id="addFolderBtn">+ Add Folder</button>
+      <div class="profile-section">
+        <div id="userInfo" class="user-info"></div>
+        <button id="logoutBtn" class="logout-btn" title="Logout"><span class="material-symbols-outlined">exit_to_app</span></button>
+        <button id="googleSignInBtn" class="google-signin-btn" title="Sign in with Google">
+          <span class="material-symbols-outlined" style="color: black;">login</span>
+          Sign in with Google
+        </button>
+
+        <!-- Mobile Actions Menu (shown on small screens when tapping username) -->
+        <div id="mobileActionsMenu" class="mobile-actions-menu">
+          <button id="mobileBackupBtn" class="menu-item">
+            <span class="material-symbols-outlined">download</span>
+            Backup Data
+          </button>
+          <button id="mobileRestoreBtn" class="menu-item">
+            <span class="material-symbols-outlined">upload</span>
+            Restore Data
+          </button>
+        </div>
       </div>
-      <div class="folder-strip" id="folders">Loading...</div>
+      <!-- <h2><span class="material-symbols-outlined">folder</span>Open Binder</span>Open Binder</h2> -->
+      <!-- <div id="folderControls">
+        <button class="btn-addfolder" id="addFolderBtn"><span class="material-symbols-outlined">add</span> Add Folder</button>
+      </div> -->
+
+      <!-- Horizontal folder list with sticky Add button (mobile only) -->
+      <div class="folder-strip" id="folders">
+        <button id="addFolderFabMobile" class="addfolder-fab-mobile" title="Add Folder">
+          <span class="material-symbols-outlined">add</span>
+        </button>
+        <span class="loading-inline">Loading...</span>
+      </div>
+
       <div class="backup-controls">
-        <button id="backupBtn" class="backup-btn">Backup Data</button>
-        <button id="restoreBtn" class="restore-btn">Restore Data</button>
+        <button id="backupBtn" class="backup-btn"><span class="material-symbols-outlined">download</span> Backup Data</button>
+        <button id="restoreBtn" class="restore-btn"><span class="material-symbols-outlined">upload</span> Restore Data</button>
       </div>
-      <div id="userInfo" class="user-info" style="margin:8px 0; color: var(--text-secondary); font-size: 0.9em;"></div>
-      <button id="googleSignInBtn" class="logout-btn">Sign in with Google</button>
-      <button id="logoutBtn" class="logout-btn">Logout</button>
     </div>
 
     <div class="content">
       <div class="list-header">
         <h2 id="folderTitle"></h2>
-        <button id="addNewBtn">Add New</button>
+        <button id="addNewBtn"><span class="material-symbols-outlined addBook-btn">add</span></button>
       </div>
       <div class="bookmark-list" id="bookmarks">Loading...</div>
     </div>
@@ -54,6 +79,29 @@
       <div id="modalPreview" class="modal-preview"></div>
       <p><a href="#" id="modalUrl" target="_blank"></a></p>
       <p id="modalDescription"></p>
+    </div>
+  </div>
+
+
+  <!-- Folder Creation Modal -->
+  <div class="modal-overlay" id="folderModal">
+    <div class="modal-content folder-modal-content">
+      <button class="close-btn" id="closeFolderModalBtn">&times;</button>
+      <h3>Create New Folder</h3>
+
+      <div class="folder-form">
+        <div class="form-group">
+          <label for="folderName">Folder Name</label>
+          <input type="text" id="folderName" placeholder="Enter folder name..." maxlength="50">
+        </div>
+
+
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-secondary" id="cancelFolderBtn">Cancel</button>
+        <button class="btn-primary" id="createFolderBtn" disabled>Create Folder</button>
+      </div>
     </div>
   </div>
 

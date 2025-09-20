@@ -9,6 +9,17 @@ document.addEventListener('DOMContentLoaded', function () {
   setupEventListeners();
   processUrlParams();
   createFloatingSaveButton();
+
+  // Fallback: Show modal immediately if not signed in
+  setTimeout(() => {
+    if (!auth || !auth.currentUser) {
+      const loginModal = document.getElementById('loginModalOverlay');
+      if (loginModal) {
+        loginModal.classList.add('show');
+        document.body.classList.add('signed-out');
+      }
+    }
+  }, 100);
 });
 
 /**
@@ -53,17 +64,47 @@ function initFirebase() {
  * UI helpers for auth visibility
  */
 function updateAuthUI(isSignedIn) {
-  const signInBtn = document.getElementById('googleSignInBtn');
-  const logoutBtn = document.getElementById('logoutBtn');
   const addFolderBtn = document.getElementById('addFolderBtn');
   const form = document.getElementById('form');
+  const loginModal = document.getElementById('loginModalOverlay');
+  const modalSignInBtn = document.getElementById('modalGoogleSignInBtn');
+  const formContainer = document.querySelector('.form-container');
 
-  if (signInBtn) signInBtn.style.display = isSignedIn ? 'none' : 'inline-block';
-  if (logoutBtn) {
-    logoutBtn.style.display = isSignedIn ? 'inline-block' : 'none';
-    logoutBtn.textContent = 'Sign out';
+  // Show/hide add folder button
+  if (addFolderBtn) addFolderBtn.style.display = isSignedIn ? 'flex' : 'none';
+
+  // Handle login modal and body class
+  if (isSignedIn) {
+    document.body.classList.add('signed-in');
+    document.body.classList.remove('signed-out');
+    if (loginModal) {
+      loginModal.classList.remove('show');
+    }
+    // Show all form content when signed in
+    if (formContainer) {
+      const children = formContainer.children;
+      for (let child of children) {
+        if (child !== loginModal) {
+          child.style.display = '';
+        }
+      }
+    }
+  } else {
+    document.body.classList.add('signed-out');
+    document.body.classList.remove('signed-in');
+    if (loginModal) {
+      loginModal.classList.add('show');
+    }
+    // Hide all form content except login modal when signed out
+    if (formContainer) {
+      const children = formContainer.children;
+      for (let child of children) {
+        if (child !== loginModal) {
+          child.style.display = 'none';
+        }
+      }
+    }
   }
-  if (addFolderBtn) addFolderBtn.style.display = isSignedIn ? 'inline-block' : 'none';
 
   // Disable form inputs when signed out
   if (form) {
@@ -105,11 +146,8 @@ function setupEventListeners() {
   const addFolderBtn = document.getElementById('addFolderBtn');
   if (addFolderBtn) addFolderBtn.addEventListener('click', addFolder);
 
-  const logoutBtn = document.getElementById('logoutBtn');
-  if (logoutBtn) logoutBtn.addEventListener('click', signOut);
-
-  const signInBtn = document.getElementById('googleSignInBtn');
-  if (signInBtn) signInBtn.addEventListener('click', signIn);
+  const modalSignInBtn = document.getElementById('modalGoogleSignInBtn');
+  if (modalSignInBtn) modalSignInBtn.addEventListener('click', signIn);
 
   const form = document.getElementById('form');
   if (form) form.addEventListener('submit', saveBookmark);
